@@ -40,6 +40,8 @@
 .matrix-table { display: inline-table; border-collapse: separate; border-spacing: 0.6ch 0.25ch; }
 .matrix-tr { display: table-row; }
 .matrix-td { display: table-cell; padding: 0 0.4ch; vertical-align: middle; }
+.matrix-inline { display: inline-flex; align-items: center; gap: 0.1em; }
+.matrix-inline > .caret-before-matrix { align-self: center; heigh: 1em; }
 
 /* Stretchy square brackets using CSS */
 .bracket { position: relative; width: 0.7em; }
