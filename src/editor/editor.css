@@ -1,0 +1,61 @@
+/* Basic styles for the editor and math render */
+.editor-wrap { display: grid; gap: 0.75rem; }
+.panes { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; align-items: start; }
+.code { display: none; }
+.preview { min-height: 160px; font-size: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; align-items: center; }
+.result-box { border: 1px solid var(--border, #ccc); padding: 10px; border-radius: 6px; min-height: 160px; }
+.expr-box { padding: 10px; border: 1px solid var(--border, #ccc); border-radius: 6px; min-height: 160px; cursor: text; }
+.expr-box:focus { outline: 2px solid #6aa3ff; outline-offset: 2px; }
+.errors { color: #c53; font-size: 12px; }
+
+.binop .op { padding: 0 4px; opacity: 0.9; }
+.binop {
+  display: inline-grid;
+  grid-template-columns: auto min-content auto;
+  align-items: center; /* vertically center operator vs tall operands */
+  column-gap: 0.35em;
+}
+.binop > .op { align-self: center; line-height: 1; }
+.group { opacity: 0.95 }
+.placeholder { display: inline-block; min-width: 1ch; padding: 0 2px; border-bottom: 2px dotted #aaa; color: #aaa; }
+
+/* Caret styling */
+.caret {
+  display: inline-block;
+  width: 1px;
+  height: 1em;
+  background: currentColor;
+  vertical-align: -0.1em;
+  animation: blink 1s step-end infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+/* Matrix/Vector pretty layout */
+.matrix-block {
+  display: inline-grid;
+  grid-template-columns: 0.7em auto 0.7em;
+  align-items: stretch; /* brackets match table height */
+  gap: 0.1em;
+}
+.matrix-table { display: inline-table; border-collapse: separate; border-spacing: 0.6ch 0.25ch; }
+.matrix-tr { display: table-row; }
+.matrix-td { display: table-cell; padding: 0 0.4ch; vertical-align: middle; }
+
+/* Stretchy square brackets using CSS */
+.bracket { position: relative; width: 0.7em; }
+.bracket.left { border-left: 2px solid currentColor; }
+.bracket.right { border-right: 2px solid currentColor; }
+.bracket.left::before,
+.bracket.left::after,
+.bracket.right::before,
+.bracket.right::after {
+  content: "";
+  position: absolute;
+  width: 0.6em;
+  height: 0;
+  border-top: 2px solid currentColor;
+}
+.bracket.left::before { top: 0; left: 0; }
+.bracket.left::after { bottom: 0; left: 0; }
+.bracket.right::before { top: 0; right: 0; }
+.bracket.right::after { bottom: 0; right: 0; }

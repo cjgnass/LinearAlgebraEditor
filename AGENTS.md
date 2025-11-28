@@ -1,0 +1,2 @@
+Scope and Goals - 
+This project is a linear algebra editor/calculator that will automatically format user input. User input should be formatted as if they were doing linear algebra on paper. For example, when a user creates a matrix the screen should render rows on top of eachother rather than one continuous line. The editor should be able to identify when a certain type of expression is necessary. For example, when a user inputs a vector of size 5, then types '+', an empty vector of size 5 should appear waiting for arguments.
