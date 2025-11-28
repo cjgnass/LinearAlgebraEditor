@@ -29,6 +29,7 @@
   animation: blink 1s step-end infinite;
 }
 @keyframes blink { 50% { opacity: 0; } }
+.caret-target { display: inline-block; width: 0; height: 1em; pointer-events: none; }
 
 /* Matrix/Vector pretty layout */
 .matrix-block {
@@ -40,8 +41,11 @@
 .matrix-table { display: inline-table; border-collapse: separate; border-spacing: 0.6ch 0.25ch; }
 .matrix-tr { display: table-row; }
 .matrix-td { display: table-cell; padding: 0 0.4ch; vertical-align: middle; }
-.matrix-inline { display: inline-flex; align-items: center; gap: 0.1em; }
-.matrix-inline > .caret-before-matrix { align-self: center; heigh: 1em; }
+.matrix-inline { display: inline-flex; align-items: center; gap: 0.05em; }
+.bracket-slot { display: inline-flex; align-items: stretch; }
+.bracket-slot.left,
+.bracket-slot.right { width: 0.7em; }
+.caret-before-matrix { align-self: center; }
 
 /* Stretchy square brackets using CSS */
 .bracket { position: relative; width: 0.7em; }

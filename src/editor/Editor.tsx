@@ -9,6 +9,37 @@ export default function Editor() {
   const [text, setText] = useState("");
   const [cursor, setCursor] = useState(0);
   const boxRef = useRef<HTMLDivElement>(null);
+  const caretTargets = useRef<{ pos: number; rect: DOMRect }[]>([]);
+
+  const resetCaretTargets = React.useCallback(() => {
+    caretTargets.current = [];
+  }, []);
+
+  const registerCaretTarget = React.useCallback(
+    (pos: number, el: HTMLElement | null) => {
+      if (!el) return;
+      caretTargets.current.push({ pos, rect: el.getBoundingClientRect() });
+    },
+    [],
+  );
+
+  const pickCaretFromClick = React.useCallback(
+    (clientX: number, clientY: number) => {
+      let best: { pos: number; dist: number } | null = null;
+      for (const target of caretTargets.current) {
+        const cx = target.rect.left + target.rect.width / 2;
+        const cy = target.rect.top + target.rect.height / 2;
+        const dx = clientX - cx;
+        const dy = clientY - cy;
+        const dist = dx * dx + dy * dy;
+        if (!best || dist < best.dist) {
+          best = { pos: target.pos, dist };
+        }
+      }
+      return best ? best.pos : null;
+    },
+    [],
+  );
 
   const { expr, errors } = useMemo(() => {
     const toks = lex(text);
@@ -97,6 +128,15 @@ export default function Editor() {
     }
   }
 
+  function handleMouseDown(e: React.MouseEvent) {
+    e.preventDefault();
+    boxRef.current?.focus();
+    const pos = pickCaretFromClick(e.clientX, e.clientY);
+    if (pos !== null) {
+      setCursor(Math.max(0, Math.min(text.length, pos)));
+    }
+  }
+
   return (
     <div className="editor-wrap">
       <div className="panes">
@@ -107,9 +147,18 @@ export default function Editor() {
             tabIndex={0}
             ref={boxRef}
             onKeyDown={handleKeyDown}
-            onFocus={() => setCursor((c) => Math.max(0, Math.min(text.length, c)))}
+            onMouseDown={handleMouseDown}
+            onFocus={() =>
+              setCursor((c) => Math.max(0, Math.min(text.length, c)))
+            }
           >
-            <RenderInteractiveExpr expr={expr} text={text} caret={cursor} />
+            <RenderInteractiveExpr
+              expr={expr}
+              text={text}
+              caret={cursor}
+              registerCaretTarget={registerCaretTarget}
+              resetCaretTargets={resetCaretTargets}
+            />
           </div>
           <div className="result-box">
             <RenderExpr expr={simplified} />
