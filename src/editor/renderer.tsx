@@ -88,15 +88,12 @@ export function RenderInteractiveExpr({
   text,
   caret,
   registerCaretTarget,
-  resetCaretTargets,
 }: {
   expr: Expression;
   text: string;
   caret: number;
   registerCaretTarget?: RegisterCaretTarget;
-  resetCaretTargets?: () => void;
 }) {
-  resetCaretTargets?.();
   return (
     <>
       <span className="interactive-root">

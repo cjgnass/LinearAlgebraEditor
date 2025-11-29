@@ -9,16 +9,12 @@ export default function Editor() {
   const [text, setText] = useState("");
   const [cursor, setCursor] = useState(0);
   const boxRef = useRef<HTMLDivElement>(null);
-  const caretTargets = useRef<{ pos: number; rect: DOMRect }[]>([]);
-
-  const resetCaretTargets = React.useCallback(() => {
-    caretTargets.current = [];
-  }, []);
+  const caretTargets = useRef<{ pos: number; el: HTMLElement }[]>([]);
 
   const registerCaretTarget = React.useCallback(
     (pos: number, el: HTMLElement | null) => {
       if (!el) return;
-      caretTargets.current.push({ pos, rect: el.getBoundingClientRect() });
+      caretTargets.current.push({ pos, el });
     },
     [],
   );
@@ -26,16 +22,20 @@ export default function Editor() {
   const pickCaretFromClick = React.useCallback(
     (clientX: number, clientY: number) => {
       let best: { pos: number; dist: number } | null = null;
+      console.log(caretTargets.current);
       for (const target of caretTargets.current) {
-        const cx = target.rect.left + target.rect.width / 2;
-        const cy = target.rect.top + target.rect.height / 2;
+        const rect = target.el.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
         const dx = clientX - cx;
         const dy = clientY - cy;
         const dist = dx * dx + dy * dy;
         if (!best || dist < best.dist) {
+          console.log("bruh");
           best = { pos: target.pos, dist };
         }
       }
+      // console.log("best", best);
       return best ? best.pos : null;
     },
     [],
@@ -130,6 +130,7 @@ export default function Editor() {
 
   function handleMouseDown(e: React.MouseEvent) {
     e.preventDefault();
+    // console.log(caretTargets.current.length);
     boxRef.current?.focus();
     const pos = pickCaretFromClick(e.clientX, e.clientY);
     if (pos !== null) {
@@ -157,7 +158,6 @@ export default function Editor() {
               text={text}
               caret={cursor}
               registerCaretTarget={registerCaretTarget}
-              resetCaretTargets={resetCaretTargets}
             />
           </div>
           <div className="result-box">
